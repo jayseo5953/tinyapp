@@ -51,6 +51,8 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+
+//create
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   let longURL = req.body.longURL;
@@ -72,6 +74,16 @@ app.post('/urls/:shortURL/delete',(req,res) => {
   res.redirect('/')
 });
 
+
+//edit
+app.post('/urls/:shortURL',(req,res) => {
+
+  urlDatabase[req.params.shortURL] = req.body.edit
+  res.redirect('/')
+  
+});
+
+//show the link or edit page
 app.get("/urls/:shortURL",(req,res) => {
   let templateVars = {
     shortURL: req.params.shortURL, 
@@ -79,6 +91,9 @@ app.get("/urls/:shortURL",(req,res) => {
   };
   res.render('urls_show',templateVars)
 })
+
+
+// accessing the website
 
 app.get("/u/:shortURL",(req,res) => {
   const shortURL = req.params.shortURL;
