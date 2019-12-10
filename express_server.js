@@ -21,8 +21,6 @@ function generateRandomString() {
   return result.join("")
 }
 
-
-
 // engine setup
 app.set("view engine","ejs")
 
