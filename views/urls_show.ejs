@@ -23,8 +23,6 @@
         </nav>
       </header>
 
-
-
   <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
@@ -32,13 +30,18 @@
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       </div>
     <div class="card-footer text-muted">
+
       <form method="POST" action="/urls/<%= shortURL %>" value="http://">
+
         <h1 class="card-title"><strong>Edit</strong></h1>
         <label for="edit-content" style="color: grey;">
           New URL:</label>
         <input type="text" name="edit" id="edit-content" value="http://">
         <input type="submit" value="SUBMIT" >
+
       </form>
+
+
     </div>
   </div>
   <!-- Bootstrap JS -->
