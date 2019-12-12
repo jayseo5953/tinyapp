@@ -4,12 +4,13 @@ const app = express();
 const PORT = 8080; // default port 8080
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
+const bcrypt = require('bcrypt')
 
 // databases
 
 const urlDatabase = {
-  // "b2xVn2": {longURL:"http://www.lighthouselabs.ca", userID:""},
-  // "9sm5xK": {longURL:"http://www.google.com", userID:""}
+  "b2xVn2": {longURL:"http://www.lighthouselabs.ca", userID:""},
+  "9sm5xK": {longURL:"http://www.google.com", userID:""}
 };
 
 const userDatabase = {
@@ -35,32 +36,29 @@ function generateRandomString() {
   return result.join("")
 };
 // checks email
-let checkEmail = (input_email,database) => {
+let checkEmail = (input_email) => {
   let result = false;
-  for (let ele in database) {
-    if (database[ele].email === input_email) {
+  for (let ele in userDatabase) {
+    if (userDatabase[ele].email === input_email) {
       result = true;
     }
   } return result;
 }
 
 // checks password
-let checkPassword = (input_id,input_password,database) => {
-  let result = false;
-  for (let ele in database) {
+let checkPassword = (input_id,input_password) => {
+  for (let ele in userDatabase) {
     if (ele === input_id) {
-      if (database[ele].password === input_password) {
-        result = true;
-      }
+      return bcrypt.compareSync(input_password, userDatabase[ele].password);
     }
-  } return result;
+  } 
 }
 
 // find id
-let findId = (input_email,database) => {
+let findId = (input_email) => {
   let id;
-  for (let ele in database) {
-    if (database[ele].email === input_email) {
+  for (let ele in userDatabase) {
+    if (userDatabase[ele].email === input_email) {
       id = ele
     }
   } return id;
@@ -174,11 +172,12 @@ app.post('/urls/:shortURL',(req,res) => {
 
 // register
 app.post('/register',(req,res) => {
-  let id = generateRandomString();
-  let email = req.body.email;
-  let password = req.body.password;
-  let userExist = checkEmail(email,userDatabase)
-  if (!email || !password) {
+  const id = generateRandomString();
+  const email = req.body.email;
+  const pw = req.body.password;
+  const password = bcrypt.hashSync(pw, 10);
+  const userExist = checkEmail(email)
+  if (!email || !pw) {
    res.statusCode = 400;
    res.send("Empty Boxes!");
   } else if(userExist){
@@ -195,11 +194,12 @@ app.post('/register',(req,res) => {
 app.post('/login', (req,res) => {
   let usrEmail = req.body.user_email;
   let usrPassword = req.body.user_password;
-  let user_id = findId(usrEmail,userDatabase);
+  let user_id = findId(usrEmail);
 
   // authentification
-  let foundEmail = checkEmail(usrEmail, userDatabase);
-  let foundPassword = checkPassword(user_id, usrPassword, userDatabase);
+  let foundEmail = checkEmail(usrEmail);
+  let foundPassword = checkPassword(user_id, usrPassword);
+
 
   if (!foundEmail) {
     res.statusCode = 403;
@@ -251,5 +251,5 @@ app.get("/u/:shortURL",(req,res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`The Server listening on port ${PORT}!`);
 });
