@@ -33,7 +33,7 @@ function generateRandomString() {
     result.push(char[Math.floor(Math.random()*char.length)])
   }
   return result.join("")
-}
+};
 // checks email
 let checkEmail = (input_email,database) => {
   let result = false;
@@ -183,7 +183,7 @@ app.post('/login', (req,res) => {
     res.cookie("user_id",user_id);
     res.redirect('/urls')
   }
-  
+
 });
 
 // logout
