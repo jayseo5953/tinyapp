@@ -13,26 +13,24 @@
 
             <a class="nav-item nav-link" href="/urls">My URLs</a>
             <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-       
+            
         </div>
       </div>
       <div>
-
-          <% if (username) { %>
+          <% if (typeof user !== 'undefined') { %>
             <div style="display: flex">
               <p style="color: white; padding-top: 7px; margin-right:10px">
-               Logged in as <strong style="color:blue"><%= username %></strong></p>
+               Logged in as <strong style="color:blue"><%= user.email %></strong></p>
                <Form method="POST" action = "/logout">
                 <button value = "Log" style="border-radius:5px; margin-top: 5px" >Logout</button>
               </Form>
             </div> 
             
             <% } else {%>
-    
-            <Form method="POST" action = "/login">
-              <input type="text" name = "username" style="border-radius: 5px">
-              <input type="submit" value = "Submit" style="border-radius: 5px">
-            </Form>
+              <div style="display:flex">
+                <a class="nav-item nav-link" href="/signup" style="color:white"><strong>Register</strong></a>
+                <a class="nav-item nav-link" href="/login" style="color:white"><strong>Log In</strong></a>
+              </div>
             
             <% }%>
 
