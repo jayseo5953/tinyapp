@@ -1,10 +1,12 @@
 // constants
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
-const cookieParser = require('cookie-parser');
+const PORT = 8080;
 const bodyParser = require("body-parser");
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
+// const cookieParser = require('cookie-parser');
+
 
 // databases
 
@@ -21,10 +23,18 @@ const userDatabase = {
   }
 };
 // engine setup
-app.set("view engine","ejs")
-// parser
-app.use(cookieParser());
+app.set("view engine","ejs");
+
+// parsers
+// app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['jolanga'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // random alphabet function
 function generateRandomString() {
@@ -78,13 +88,13 @@ app.get('/urls',(req,res) => {
       }
     };
   };
-  urlsForUser(req.cookies["user_id"]);
+  urlsForUser(req.session.user_id);
 
   let templateVars;
-  if (req.cookies["user_id"]) {
+  if (req.session.user_id) {
     templateVars = {
       userUrls,
-      user: userDatabase[req.cookies["user_id"]]
+      user: userDatabase[req.session.user_id]
     } 
     } else {
       templateVars = {
@@ -103,9 +113,9 @@ app.get("/", (req, res) => {
 app.get('/urls/new', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    user: userDatabase[req.cookies["user_id"]]
+    user: userDatabase[req.session.user_id]
   }
-  if (req.cookies.user_id){
+  if (req.session.user_id){
     res.render("urls_new",templateVars);
   } else {
     res.redirect("/login")
@@ -115,7 +125,7 @@ app.get('/urls/new', (req, res) => {
 // when logged in
 app.get('/login',(req,res) => {
   let templateVars = {
-    user: userDatabase[req.cookies["user_id"]]
+    user: userDatabase[req.session.user_id]
   };
   res.render("urls_login", templateVars);
 })
@@ -124,7 +134,7 @@ app.get('/login',(req,res) => {
 app.get('/signup', (req, res) => {
   let templateVars = {
     urls: urlDatabase,
-    user: userDatabase[req.cookies["user_id"]]
+    user: userDatabase[req.session.user_id]
   }
   res.render("urls_regi",templateVars)
 });
@@ -138,7 +148,7 @@ app.get('/signup', (req, res) => {
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   let longURL = req.body.longURL;
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
   urlDatabase[shortURL] = {}
   urlDatabase[shortURL].longURL = longURL;
   urlDatabase[shortURL].userID = user_id;
@@ -147,7 +157,7 @@ app.post("/urls", (req, res) => {
 
 //delete
 app.post('/urls/:shortURL/delete',(req,res) => {
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
   let shortURL = req.params.shortURL;
 
   if (urlDatabase[shortURL].userID === user_id){
@@ -158,7 +168,7 @@ app.post('/urls/:shortURL/delete',(req,res) => {
 
 //edit
 app.post('/urls/:shortURL',(req,res) => {
-  let user_id = req.cookies.user_id;
+  let user_id = req.session.user_id;
   let shortURL = req.params.shortURL;
 
   if (urlDatabase[shortURL].userID === user_id){
@@ -185,7 +195,7 @@ app.post('/register',(req,res) => {
     res.send("User Already Exists!");
   } else {
     userDatabase[id] = {id, email, password};
-    res.cookie("user_id",id);
+    req.session.user_id = id;
     res.redirect('/urls');
   }
 });
@@ -208,14 +218,14 @@ app.post('/login', (req,res) => {
     res.statusCode = 403;
     res.send("Password does not Macth!");
   } else {
-    res.cookie("user_id",user_id);
+    req.session.user_id = user_id;
     res.redirect('/urls')
   }
 });
 
 // logout
 app.post('/logout', (req, res) => {
-  res.clearCookie("user_id")
+  req.session = null;
   res.redirect('/')
 });
 
@@ -226,8 +236,8 @@ app.get("/urls/:shortURL",(req,res) => {
   let templateVars = {
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL],
-    user_id: req.cookies["user_id"],
-    user: userDatabase[req.cookies.user_id]
+    user_id: req.session.user_id,
+    user: userDatabase[req.session.user_id]
   };
   res.render('urls_show',templateVars)
 })
