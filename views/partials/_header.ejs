@@ -5,19 +5,18 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     
-    
+    <% if (typeof user !== 'undefined') { %>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
       <div class="navbar-nav" style="flex-direction: row; flex:1; justify-content: space-between">
         <div style="display: flex">
 
             <a class="nav-item nav-link" href="/urls">My URLs</a>
-            <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+            <a class="nav-item nav-link" href="/urls/new">Create New Link</a>
             
         </div>
       </div>
-      <div>
-          <% if (typeof user !== 'undefined') { %>
+      <div> 
             <div style="display: flex">
               <p style="color: white; padding-top: 7px; margin-right:10px">
                Logged in as <strong style="color:blue"><%= user.email %></strong></p>
@@ -31,7 +30,6 @@
                 <a class="nav-item nav-link" href="/signup" style="color:white"><strong>Register</strong></a>
                 <a class="nav-item nav-link" href="/login" style="color:white"><strong>Log In</strong></a>
               </div>
-            
             <% }%>
 
        </div>

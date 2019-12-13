@@ -7,38 +7,27 @@
 </head>
 
 <body>
-
     <%- include("./partials/_header") %>
 
   <div class="card text-center">
-
-      <div class="card-header">
-
-      
-      </div>
+      <div class="card-header"></div>
       <div class="card-body">
-        <h2>New Account</h2>
-          <h1 class="card-title"></h1>
-          <form method = "POST" action = "/register">
-            
-            <label for="email" style="color: grey;">
-              Email</label>
-            <input type="email" name="email" id="email">
-
-            <label for="password" style="color: grey;">
-                Password</label>
-            <input type="password" name="password" id="password">
-
-            <label for="re_password" style="color: grey;">
-              re-enter Password</label>
-            <input type="password" name="re_password" id="re_password">
-
-            <input type="submit" value="SUBMIT" >
-          </form>
+        <h5 class="card-title">TinyURL for: <%= longURL.longURL %></h5>
       </div>
-      <div class="card-footer text-muted">
+    <div class="card-footer text-muted">
 
-      </div>
+      <form method="POST" action="/urls/<%= shortURL %>" value="http://">
+
+        <h1 class="card-title"></h1>
+        <label for="edit-content" style="color: grey;">
+          New URL:</label>
+        <input type="text" name="edit" id="edit-content" value="http://">
+        <input type="submit" value="SUBMIT" >
+
+      </form>
+
+
+    </div>
   </div>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

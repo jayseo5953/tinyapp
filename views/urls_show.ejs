@@ -17,16 +17,10 @@
       </div>
     <div class="card-footer text-muted">
 
-      <form method="POST" action="/urls/<%= shortURL %>" value="http://">
-
-        <h1 class="card-title"><strong>Edit</strong></h1>
-        <label for="edit-content" style="color: grey;">
-          New URL:</label>
-        <input type="text" name="edit" id="edit-content" value="http://">
-        <input type="submit" value="SUBMIT" >
-
-      </form>
-
+        <h2 class="card-title"><strong><a href="/urls">My Urls</a></strong></h2>
+        <h2 class="card-title"><strong><a href="/urls/<%= shortURL %>/edit">Edit</a></strong></h2>
+       
+  
 
     </div>
   </div>
